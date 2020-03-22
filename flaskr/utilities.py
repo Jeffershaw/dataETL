@@ -13,7 +13,7 @@ def getNewsKeyword(keyword):
   
   response = requests.get(url)  
   json_data = json.loads(response.text)['articles']  
-  data = json_normalize(json_data, max_level=2)
+  data = json_normalize(json_data)
   return data
 
 

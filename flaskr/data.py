@@ -4,11 +4,13 @@ from flaskr import utilities
 
 app = Flask(__name__)
 
-@app.route("/tables")
+@app.route("/")
 def show_tables():
-    data = utilities.getNewsKeyword('Trump')
-    return render_template('view.html',tables=[data.to_html(classes='female')],
-    titles = ['na', 'Female surfers', 'Male surfers'])
+    df_news= utilities.getNewsKeyword('Trump')
+    df_treands = utilities.getGoogleTrends('Trump')
+
+    return render_template('view.html',tables=[df_news.to_html(classes='news'), df_treands.to_html(classes='trends')],
+    titles = ['na', 'Top News', 'Google Trends'])
 
 if __name__ == "__main__":
     app.run(debug=True)
