@@ -4,6 +4,8 @@ import json
 import pandas as pd
 import time
 from pandas.io.json import json_normalize
+from xml.etree import ElementTree
+import datetime as dt
 
 
 def getNewsKeyword(keyword):
@@ -15,6 +17,23 @@ def getNewsKeyword(keyword):
   json_data = json.loads(response.text)['articles']  
   data = json_normalize(json_data)
   return data
+
+
+def getSnapshot(data):
+    df = data[['source.name','title', 'publishedAt']]
+    #clean datetime
+    df['publishedAt'] = df['publishedAt'].str.slice(0, 16)
+    df['publishedAt'] = df['publishedAt'].apply(lambda x: dt.datetime.strptime(x,'%Y-%m-%dT%H:%M'))
+    #remove duplicates
+    df = df.drop_duplicates(subset='title')
+    return df
+
+
+def getYieldCurve():
+    url = ('http://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData?$filter=year(NEW_DATE)%20eq%202019')
+    response = requests.get(url)
+    tree = ElementTree.fromstring(response.content)
+    pass
 
 
 def getGoogleTrends(keyword):
