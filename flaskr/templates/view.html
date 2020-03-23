@@ -8,7 +8,7 @@
 <input id="submit" name="submit" type="submit" value="submit">
 </form>
 <div class=page>
-  <h1>Top News & Trends Related to Trump</h1>
+  <h1>Top News & Trends Related to Markets</h1>
   {% for table in tables %}
     <h2>{{titles[loop.index]}}</h2>
     {{ table|safe }}
@@ -26,7 +26,7 @@
  // 指定图表的配置项和数据
  var option = {
                     title:{
-                      text: 'Trends Figure'
+                      text: 'Trends In Past One Year'
                     },
                     color: ['#5793f3', '#86888d'],
                     tooltip: {
