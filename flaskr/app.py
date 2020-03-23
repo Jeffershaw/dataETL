@@ -3,9 +3,9 @@ from flaskr import utilities
 import numpy as np
 import json
 from flask_bootstrap import Bootstrap
-import schedule
-from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask
+# import schedule
+# from apscheduler.schedulers.background import BackgroundScheduler
+from flask import *
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -52,8 +52,9 @@ def show_trends():
 
 if __name__ == "__main__":
     print(__name__)
-    schedule.every(1).day.at("23:55").do(job)
-    t = Thread(target=run_schedule)
-    t.start()
-    print "Start time: " + str(start_time)
+    # schedule.every(1).day.at("23:55").do(job)
+    # t = Thread(target=run_schedule)
+    # t.start()
+    # print("Start time: " + str(start_time))
+    print("1231231231231231")
     app.run(debug=True, host='0.0.0.0', port=5000)
