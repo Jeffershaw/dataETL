@@ -4,17 +4,51 @@ import json
 import pandas as pd
 import time
 from pandas.io.json import json_normalize
+from xml.etree import ElementTree
+import datetime as dt
 
 
 def getNewsKeyword(keyword):
-  url = ('http://newsapi.org/v2/top-headlines?'
-       'q=%s&'
-       'apiKey=7417491a101e4ec3a8219b263f028ff7'%keyword)
+    #get news relating to keywords and filter language is en
+    url = ('http://newsapi.org/v2/top-headlines?'
+    'q=%s&'
+    'language=en&'
+    'apiKey=7417491a101e4ec3a8219b263f028ff7'%keyword)
   
-  response = requests.get(url)  
-  json_data = json.loads(response.text)['articles']  
-  data = json_normalize(json_data)
-  return data
+    response = requests.get(url)  
+    json_data = json.loads(response.text)['articles']  
+    data = json_normalize(json_data)
+    return data
+
+
+def getSnapshot(data):
+    #display full news title
+    pd.set_option('display.max_colwidth', -1)
+    #select information to display & rename
+    df = data[['source.name','title','publishedAt']]
+    df = df.rename(columns={'source.name':'News_Source', 'title':'Title', 'publishedAt':'Pubulished_At'})
+    #clean datetime
+    df['Pubulished_At'] = df['Pubulished_At'].str.slice(0, 16)
+    df['Pubulished_At'] = df['Pubulished_At'].apply(lambda x: dt.datetime.strptime(x,'%Y-%m-%dT%H:%M'))
+    #remove duplicates
+    df = df.drop_duplicates(subset='Title')
+    #sorted the latest released news
+    df = df.sort_values(by='Pubulished_At', ascending=False)
+    return df
+
+
+def getYieldCurve():
+    url = ('http://data.treasury.gov/feed.svc/DailyTreasuryYieldCurveRateData?$filter=year(NEW_DATE)%20eq%202019')
+    response = requests.get(url)
+    tree = ElementTree.fromstring(response.content)
+    pass
+
+
+def showSnapshot(df):
+    #sort index to show latest 7 days trends
+    res = df.sort_index(axis=0, ascending=False)
+    res = res[:7]
+    return res
 
 
 def getGoogleTrends(keyword):
