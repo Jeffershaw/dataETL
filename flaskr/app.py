@@ -1,11 +1,11 @@
-from flask import *
 import pandas as pd
 from flaskr import utilities
 import numpy as np
 import json
 from flask_bootstrap import Bootstrap
 import schedule
-import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -37,7 +37,23 @@ def show_trends():
     return render_template('view.html', trendsData =json.dumps(trendsData.tolist()),
     trendsTime = json.dumps(trendsTime.tolist()))
 
+
+# cron = Scheduler(daemon=True)
+# # Explicitly kick off the background thread
+# cron.start()
+
+# @cron.interval_schedule(hours=1)
+# def job_function():
+#     # Do your work here
+
+
+# # Shutdown your cron thread if the web process is stopped
+# atexit.register(lambda: cron.shutdown(wait=False))
+
 if __name__ == "__main__":
     print(__name__)
-    app.run(debug=True)
-    app.run(host='0.0.0.0', port=12345)
+    schedule.every(1).day.at("23:55").do(job)
+    t = Thread(target=run_schedule)
+    t.start()
+    print "Start time: " + str(start_time)
+    app.run(debug=True, host='0.0.0.0', port=5000)
